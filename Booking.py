@@ -1,3 +1,6 @@
+# This code is sample code of a Tesla car booking system in India.
+# It allows users to view available cars, book a car, view bookings, and cancel bookings
+
 import mysql.connector
 import math
 
@@ -30,6 +33,7 @@ def process_payment(booking_id, car_price):
     choice = input("Enter choice: ")
 
     if choice == "1":
+        print("\nProcessing Debit/Credit Card Payment...")
         card_no = input("Enter Card Number (XXXX-XXXX-XXXX-XXXX): ")
         name = input("Card Holder Name: ")
         print("Processing Card Payment...")
@@ -38,6 +42,8 @@ def process_payment(booking_id, car_price):
         amount = car_price
 
     elif choice == "2":
+        print("\nProcessing UPI Payment...")
+        print("Please ensure your UPI ID is linked to your bank account.")
         upi_id = input("Enter UPI ID (e.g., name@upi): ")
         print("Processing UPI Payment...")
         payment_method = "UPI"
@@ -45,6 +51,7 @@ def process_payment(booking_id, car_price):
         amount = car_price
 
     elif choice == "3":
+        print("\nProcessing Loan Installment (EMI) Payment...")
         emi_months = int(input("Enter EMI duration (6, 12, 24 months): "))
         interest_rate = 0.10  
         monthly_interest = interest_rate / 12
@@ -107,7 +114,7 @@ def view_bookings():
     print("  ID |   Customer   | Phone | State |   Car Model   |   Payment   |   Amount   |   Date and Time  ")
     print("--------------------------------------------------------------------------------------------------")
     for b in bookings:
-        print(f"{b[0]} | {b[1]} | {b[2]} | {b[3]} | {b[4]} | {b[5]} ₹{b[6]:,.2f} | {b[7]}")
+        print(f"{b[0]} | {b[1]} | {b[2]} | {b[3]} | {b[4]} | {b[5]} | ₹{b[6]:,.2f} | {b[7]}")
 
 def cancel_booking():
     booking_id = int(input("\nEnter Booking ID to Cancel: "))
@@ -129,7 +136,7 @@ def cancel_booking():
     cursor.execute("UPDATE cars SET available = available + 1 WHERE id=%s", (car_id,))
     conn.commit()
 
-    print(f"Booking ID {booking_id} has been cancelled and payment will be refunded.")
+    print(f"Booking ID {booking_id} has been cancelled and payment will be refunded through the original payment method.")
 
 def main():
     while True:
@@ -137,7 +144,8 @@ def main():
         print("1. View Cars")
         print("2. Book a Car")
         print("3. View All Bookings & Payments")
-        print("4. Exit")
+        print("4. Cancel Booking")
+        print("5. Exit")
 
         choice = input("Enter your choice: ")
 
@@ -148,7 +156,9 @@ def main():
         elif choice == "3":
             view_bookings()
         elif choice == "4":
-            print("Exiting... Thank you for booking with Tesla India!")
+            cancel_booking()
+        elif choice == "5":
+            print("Exiting... Thank you for showing interest in Tesla India!")
             break
         else:
             print("Invalid choice! Try again.")
