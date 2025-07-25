@@ -1,0 +1,40 @@
+#This comments should be used in MySQL command line before doing python code#
+
+
+CREATE DATABASE tesla_booking;       #Creat a database first
+
+USE tesla_booking;                    #Get in to the database
+
+CREATE TABLE cars (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    model_name VARCHAR(50),                        #Create a table "cars"
+    price FLOAT(30),
+    available INT
+);
+
+INSERT INTO cars (model_name, price, available) VALUES
+('Tesla Model Y', 6000000, 500),                          #Insert the car details into table car
+('Tesla Model Y(Long Range)', 7000000, 500);
+
+
+CREATE TABLE bookings (
+    booking_id INT AUTO_INCREMENT PRIMARY KEY,
+    customer_name VARCHAR(100),
+    phone VARCHAR(15),                                   #Create table "Bookings"
+    car_id INT,
+    booking_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+);
+
+
+
+CREATE TABLE payments (
+    payment_id INT AUTO_INCREMENT PRIMARY KEY,
+    booking_id INT,
+    payment_method VARCHAR(50),                         #Create table "payments"
+    amount FLOAT(30),
+    emi_months INT DEFAULT NULL,
+    payment_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+);
+
+
+

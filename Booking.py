@@ -93,6 +93,8 @@ In future updates, your car will be able to drive itself almost anywhere with mi
             (name, phone, state, car_id)
         )
         conn.commit()
+        cursor.execute("select booking_id from bookings where customer_name=%s and phone=%s and state=%s and car_id=%s", (name, phone, state, car_id))
+        car_booking = cursor.fetchone()
 
         booking_id = cursor.lastrowid
         car_price = car_data[1]
@@ -103,12 +105,13 @@ In future updates, your car will be able to drive itself almost anywhere with mi
         cursor.execute("UPDATE cars SET available = available - 1 WHERE id = %s", (car_id,))
         conn.commit()
 
-        print("\n Booking Successful!")
+        print(f"\n Booking Successful! Booking ID: {car_booking[0]}")
         process_payment(booking_id, car_price)
     else:
         print("\n Car Not Available!")
 
 def view_bookings():
+    bch= int(input("Enter your Booking ID to view details:"))
     cursor.execute("""
         SELECT b.booking_id, b.customer_name, b.phone, b.state, c.model_name, p.payment_method, p.amount, b.booking_date
         FROM bookings b
@@ -116,12 +119,24 @@ def view_bookings():
         LEFT JOIN payments p ON b.booking_id = p.booking_id
     """)
     bookings = cursor.fetchall()
-
-    print("\nAll Bookings & Payments:")
-    print("  ID |   Customer   | Phone | State |   Car Model   |   Payment   |   Amount   |   Date and Time  ")
-    print("--------------------------------------------------------------------------------------------------")
+    found = False
     for b in bookings:
-        print(f"{b[0]} | {b[1]} | {b[2]} | {b[3]} | {b[4]} | {b[5]} | ₹{b[6]:,.2f} | {b[7]}")
+        payment_method = b[5] or "Not Paid"
+        amount = f"₹{b[6]:,.2f}" if b[6] else "N/A"
+
+        if b[0] == bch: 
+            found = True
+            print("\n-----Your Booking Details----")
+            print(f"Booking ID: {b[0]}")
+            print(f"Customer Name: {b[1]}")
+            print(f"Phone: {b[2]}")
+            print(f"State: {b[3]}")
+            print(f"Car Model: {b[4]}")
+            print(f"Payment Method: {payment_method}")
+            print(f"Amount: {amount}")
+            print(f"Booking Date and Time: {b[7]}")
+    if not found:
+        print("\n No booking found with this ID.")
 
 def cancel_booking():
     booking_id = int(input("\nEnter Booking ID to Cancel: "))
@@ -150,7 +165,7 @@ def main():
         print("\n===== Tesla Car Booking System (India) =====")
         print("1. View Cars")
         print("2. Book a Car")
-        print("3. View All Bookings & Payments")
+        print("3. View my Booking")
         print("4. Cancel Booking")
         print("5. Exit")
 
