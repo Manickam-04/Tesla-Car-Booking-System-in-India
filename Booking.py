@@ -76,6 +76,10 @@ def process_payment(booking_id, car_price):
 def book_car():
     view_cars()
     car_id = int(input("\nEnter Car ID to book: "))
+    print("""Full Self-Driving Capability
+In future updates, your car will be able to drive itself almost anywhere with minimal driver intervention
+          For that you need to pay ₹6,00,000 extra.""")
+    full_self_driving = input("Do you want to add FSD?(✅/❌) or (yes/no):")
     name = input("Enter Your Name: ")
     phone = input("Enter Phone Number: ")
     state = input("Enter Registration State: ")
@@ -92,6 +96,9 @@ def book_car():
 
         booking_id = cursor.lastrowid
         car_price = car_data[1]
+        if full_self_driving.lower() == 'yes' or full_self_driving.lower() == '✅':
+            car_price += 600000  
+            print("Full Self-Driving Capability added for ₹6,00,000.")
 
         cursor.execute("UPDATE cars SET available = available - 1 WHERE id = %s", (car_id,))
         conn.commit()
