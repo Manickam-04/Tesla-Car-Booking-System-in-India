@@ -99,14 +99,15 @@ In future updates, your car will be able to drive itself almost anywhere with mi
         booking_id = cursor.lastrowid
         car_price = car_data[1]
         if full_self_driving.lower() == 'yes' or full_self_driving.lower() == '✅':
-            car_price += 600000  
-            print("Full Self-Driving Capability added for ₹6,00,000.")
+            car_price += 600000
+            print(f"Full Self-Driving Capability added for ₹6,00,000 and now the total price is ₹{car_price:,.2f}")
 
         cursor.execute("UPDATE cars SET available = available - 1 WHERE id = %s", (car_id,))
         conn.commit()
-
-        print(f"\n Booking Successful! Booking ID: {car_booking[0]}")
+        
         process_payment(booking_id, car_price)
+        print(f"\n Booking Successful! Booking ID: {car_booking[0]}")
+       
     else:
         print("\n Car Not Available!")
 
